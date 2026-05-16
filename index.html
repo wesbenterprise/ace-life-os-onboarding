@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ACE Life OS Onboarding Survey</title>
+  <meta name="description" content="A local-first onboarding interview for building durable AI assistant context across identity, mission, goals, constraints, preferences, and ideal state." />
+  <link rel="icon" href="/assets/ace-logo.png" />
+  <style>
+    :root {
+      --bg: oklch(15% 0.018 252);
+      --panel: oklch(19% 0.02 252);
+      --panel-2: oklch(23% 0.025 252);
+      --ink: oklch(93% 0.016 80);
+      --muted: oklch(76% 0.02 83);
+      --faint: oklch(60% 0.018 83);
+      --gold: oklch(78% 0.12 83);
+      --gold-2: oklch(66% 0.11 83);
+      --line: oklch(34% 0.035 252);
+      --good: oklch(72% 0.16 155);
+      --warn: oklch(76% 0.13 63);
+      --danger: oklch(66% 0.17 25);
+      --shadow: 0 24px 80px rgb(0 0 0 / .34);
+      color-scheme: dark;
+      font-family: ui-serif, Georgia, Cambria, "Times New Roman", serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 14% 0%, oklch(45% 0.08 83 / .18), transparent 34rem),
+        radial-gradient(circle at 86% 12%, oklch(34% 0.08 250 / .28), transparent 38rem),
+        linear-gradient(135deg, oklch(13% 0.018 252), var(--bg) 46%, oklch(11% 0.02 252));
+    }
+    button, input, textarea, select { font: inherit; }
+    a { color: var(--gold); }
+    .shell { width: min(1180px, calc(100vw - 32px)); margin: 0 auto; }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(18px);
+      background: oklch(13% 0.018 252 / .78);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav { display: flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 76px; }
+    .brand { display: flex; align-items: center; gap: 14px; min-width: 0; }
+    .brand img { width: 48px; height: 48px; object-fit: contain; }
+    .brand strong { display: block; letter-spacing: .11em; text-transform: uppercase; font-size: .8rem; color: var(--gold); }
+    .brand span { display: block; color: var(--muted); font-size: .88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .nav-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+    .btn {
+      border: 1px solid var(--line);
+      color: var(--ink);
+      background: var(--panel);
+      min-height: 42px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: transform .16s ease, border-color .16s ease, background .16s ease;
+    }
+    .btn:hover { transform: translateY(-1px); border-color: var(--gold-2); }
+    .btn.primary { background: linear-gradient(180deg, var(--gold), var(--gold-2)); color: oklch(16% 0.025 252); border-color: transparent; font-weight: 700; }
+    .btn.ghost { background: transparent; }
+    .btn.danger { border-color: oklch(48% 0.13 25); color: oklch(82% 0.1 25); }
+    main { padding: 54px 0 72px; }
+    .hero { display: grid; grid-template-columns: 1.05fr .95fr; gap: 28px; align-items: stretch; margin-bottom: 28px; }
+    .hero-card, .panel {
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, oklch(21% 0.02 252 / .92), oklch(16% 0.018 252 / .94));
+      box-shadow: var(--shadow);
+      border-radius: 28px;
+    }
+    .hero-card { padding: clamp(28px, 5vw, 58px); position: relative; overflow: hidden; }
+    .hero-card:before { content: ""; position: absolute; inset: -1px; background: radial-gradient(circle at 12% 0%, oklch(82% 0.13 83 / .16), transparent 26rem); pointer-events: none; }
+    .eyebrow { color: var(--gold); letter-spacing: .22em; text-transform: uppercase; font-size: .78rem; position: relative; }
+    h1 { margin: 16px 0; font-size: clamp(2.4rem, 7vw, 5.8rem); line-height: .9; letter-spacing: -.05em; text-wrap: balance; position: relative; }
+    .lead { color: var(--muted); font-size: clamp(1.02rem, 2vw, 1.22rem); line-height: 1.62; max-width: 68ch; position: relative; }
+    .hero-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 30px; position: relative; }
+    .metric { padding: 16px; border: 1px solid var(--line); background: oklch(13% 0.02 252 / .6); border-radius: 18px; }
+    .metric b { display: block; font-size: 1.45rem; color: var(--gold); }
+    .metric span { color: var(--faint); font-size: .82rem; }
+    .side { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+    .progress-wrap { display: grid; gap: 10px; }
+    .progress-label { display: flex; justify-content: space-between; color: var(--muted); font-size: .92rem; }
+    .bar { height: 14px; border-radius: 999px; background: oklch(11% 0.018 252); overflow: hidden; border: 1px solid var(--line); }
+    .bar > div { height: 100%; width: 0%; background: linear-gradient(90deg, var(--gold-2), var(--gold)); transition: width .25s ease; }
+    .summary-box { border: 1px dashed var(--line); border-radius: 18px; padding: 16px; color: var(--muted); line-height: 1.5; }
+    .layout { display: grid; grid-template-columns: 290px minmax(0, 1fr); gap: 24px; align-items: start; }
+    aside { position: sticky; top: 98px; }
+    .phase-list { padding: 10px; }
+    .phase-btn { width: 100%; text-align: left; display: grid; gap: 4px; padding: 13px 14px; border-radius: 16px; border: 1px solid transparent; background: transparent; color: var(--muted); cursor: pointer; }
+    .phase-btn:hover, .phase-btn.active { background: var(--panel-2); border-color: var(--line); color: var(--ink); }
+    .phase-btn strong { color: var(--gold); font-size: .83rem; letter-spacing: .12em; text-transform: uppercase; }
+    .phase-btn span { font-size: .88rem; }
+    .questions { padding: clamp(18px, 4vw, 34px); }
+    .phase-head { display: flex; justify-content: space-between; gap: 16px; align-items: start; border-bottom: 1px solid var(--line); padding-bottom: 20px; margin-bottom: 24px; }
+    .phase-head h2 { margin: 0; font-size: clamp(1.8rem, 4vw, 3rem); line-height: 1; letter-spacing: -.04em; }
+    .phase-head p { color: var(--muted); max-width: 62ch; line-height: 1.55; margin: 10px 0 0; }
+    .question { border: 1px solid var(--line); background: oklch(13% 0.018 252 / .48); border-radius: 22px; padding: 18px; margin: 14px 0; }
+    .q-top { display: flex; gap: 12px; align-items: start; justify-content: space-between; margin-bottom: 12px; }
+    .q-label { color: var(--ink); font-size: 1.04rem; line-height: 1.38; font-weight: 700; }
+    .chip { flex: none; color: var(--gold); border: 1px solid var(--line); border-radius: 999px; padding: 4px 8px; font-size: .74rem; }
+    textarea, input[type="text"] { width: 100%; border: 1px solid var(--line); background: oklch(10.5% 0.018 252); color: var(--ink); border-radius: 16px; padding: 14px; line-height: 1.5; outline: none; }
+    textarea { min-height: 112px; resize: vertical; }
+    textarea:focus, input:focus { border-color: var(--gold-2); box-shadow: 0 0 0 3px oklch(70% 0.1 83 / .18); }
+    .hint { color: var(--faint); font-size: .82rem; margin-top: 8px; }
+    .footer-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; padding-top: 20px; border-top: 1px solid var(--line); margin-top: 24px; }
+    dialog { border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 24px; width: min(840px, calc(100vw - 28px)); box-shadow: var(--shadow); }
+    dialog::backdrop { background: rgb(0 0 0 / .72); }
+    pre { white-space: pre-wrap; overflow: auto; background: oklch(10% 0.018 252); border: 1px solid var(--line); border-radius: 16px; padding: 16px; color: var(--muted); max-height: 52vh; }
+    .modal-head { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+    .toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%) translateY(80px); background: var(--gold); color: oklch(13% 0.018 252); padding: 12px 16px; border-radius: 999px; font-weight: 700; transition: transform .2s ease; z-index: 20; }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    @media (max-width: 880px) {
+      .hero, .layout { grid-template-columns: 1fr; }
+      aside { position: static; }
+      .hero-meta { grid-template-columns: 1fr; }
+      .nav { align-items: flex-start; flex-direction: column; padding: 14px 0; }
+      .nav-actions { justify-content: flex-start; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *:before, *:after { scroll-behavior: auto !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="shell nav">
+      <div class="brand">
+        <img src="/assets/ace-logo.png" alt="ACE winged spade logo" />
+        <div><strong>Agent Communication Exchange</strong><span>Life OS onboarding survey, local-first profile capture</span></div>
+      </div>
+      <div class="nav-actions">
+        <button class="btn ghost" id="copyBtn">Copy for Hermes</button>
+        <button class="btn" id="downloadBtn">Download JSON</button>
+        <button class="btn primary" id="reviewBtn">Review packet</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-card">
+        <div class="eyebrow">Adapted from PAI InterviewScan</div>
+        <h1>Teach your assistant how to actually know you.</h1>
+        <p class="lead">A structured onboarding interview for persistent AI memory. It captures the high-signal context behind good delegation: who you are, what you are building, what matters, where you are trying to go, and how an assistant should operate around you.</p>
+        <div class="hero-meta">
+          <div class="metric"><b id="answeredMetric">0</b><span>answered prompts</span></div>
+          <div class="metric"><b>8</b><span>survey phases</span></div>
+          <div class="metric"><b>Local</b><span>stored in this browser</span></div>
+        </div>
+      </div>
+      <div class="panel side">
+        <div class="progress-wrap">
+          <div class="progress-label"><span>Completion</span><strong id="completionText">0%</strong></div>
+          <div class="bar"><div id="barFill"></div></div>
+        </div>
+        <div class="summary-box">
+          <strong>Privacy:</strong> there is no backend. Answers are saved only in this browser until you export or copy the packet. If you want Hermes to learn from it, paste the copied packet back into chat.
+        </div>
+        <div class="summary-box">
+          <strong>Process lesson:</strong> ask one good question per durable context slot, then convert natural-language answers into memory, project notes, and reusable workflow rules.
+        </div>
+        <button class="btn danger" id="clearBtn">Clear local answers</button>
+      </div>
+    </section>
+
+    <section class="layout">
+      <aside class="panel phase-list" id="phaseList"></aside>
+      <section class="panel questions">
+        <div class="phase-head">
+          <div>
+            <div class="eyebrow" id="phaseEyebrow">Phase</div>
+            <h2 id="phaseTitle">Loading</h2>
+            <p id="phaseDescription"></p>
+          </div>
+          <button class="btn" id="nextPhaseBtn">Next phase</button>
+        </div>
+        <div id="questionList"></div>
+        <div class="footer-actions">
+          <button class="btn" id="prevPhaseBtn">Previous</button>
+          <button class="btn primary" id="bottomReviewBtn">Generate profile packet</button>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <dialog id="packetDialog">
+    <div class="modal-head">
+      <div><div class="eyebrow">Export</div><h2>Hermes learning packet</h2></div>
+      <button class="btn" id="closeDialog">Close</button>
+    </div>
+    <p class="lead">Paste this into Hermes when you want the assistant to ingest the answers and update memory/process notes.</p>
+    <pre id="packetText"></pre>
+    <div class="footer-actions"><button class="btn primary" id="copyPacketBtn">Copy packet</button></div>
+  </dialog>
+  <div class="toast" id="toast">Saved</div>
+
+  <script>
+    const phases = [
+      { id: 'identity', title: 'Identity and assistant setup', desc: 'The minimum viable profile: name, timezone, assistant identity, and communication contract.', questions: [
+        ['principalName', 'What should your assistant call you?', 'First name or preferred name.'],
+        ['timezone', 'What timezone should scheduling and date-sensitive work use?', 'Example: America/New_York.'],
+        ['assistantName', 'What is this assistant called, and what role should it play?', 'Name, operating persona, and boundaries.'],
+        ['catchphrase', 'What startup phrase or tone should signal that the assistant is ready?', 'Optional, useful for voice or dashboard surfaces.'],
+        ['communicationStyle', 'How should the assistant communicate with you by default?', 'Concise, candid, detailed, Socratic, executive brief, etc.']
+      ]},
+      { id: 'mission', title: 'Mission, goals, and problems', desc: 'The TELOS layer: what matters, what you are building, and what is worth steering toward.', questions: [
+        ['northStar', 'What is your north-star mission in one sentence?', 'The sentence that should shape tradeoffs.'],
+        ['secondaryMissions', 'What secondary missions serve the north star but deserve their own articulation?', 'Family, business, philanthropy, creative, faith, community.'],
+        ['activeGoals', 'What active goals are you pushing on this year?', 'List outcomes, not just projects.'],
+        ['deferredGoals', 'What goals are deferred or ongoing but still worth tracking?', 'Things not active now but still alive.'],
+        ['worldProblems', 'What big problems are you trying to solve with your work?', 'World-scale or community-scale, not just personal tasks.'],
+        ['uncommittedProblems', 'What problems matter but do not yet have a strategy?', 'Useful for future strategy work.']
+      ]},
+      { id: 'strategy', title: 'Strategies, constraints, and risk posture', desc: 'How you attack problems, what you refuse to do, and where the assistant should slow down.', questions: [
+        ['activeStrategies', 'What strategies are currently working?', 'How you are attacking the goals and problems.'],
+        ['reverseStrategies', 'What strategies should the assistant avoid recommending?', 'Known bad plays, distractions, or values conflicts.'],
+        ['riskPosture', 'Where are you aggressive, and where are you principal-protection first?', 'Money, reputation, family time, legal, health, data.'],
+        ['knownWeaknesses', 'What personal challenges get in the way?', 'Energy traps, procrastination patterns, blind spots.'],
+        ['decisionRules', 'What decision rules should the assistant enforce?', 'Examples: verify sources, no archive email, protect principal.']
+      ]},
+      { id: 'current', title: 'Current state snapshot', desc: 'The live operating picture: what is true right now, what is stalled, and what needs attention.', questions: [
+        ['currentFocus', 'What are the top priorities right now?', 'This week or this month.'],
+        ['stalledItems', 'What is stalled, blocked, or repeatedly slipping?', 'Projects, decisions, people, health, admin.'],
+        ['recentWins', 'What recent wins or changes should the assistant know?', 'Useful context for continuity.'],
+        ['energyMood', 'How is your current energy, mood, sleep, and bandwidth?', 'Enough detail to adjust task load.'],
+        ['openLoops', 'What open loops should the assistant keep watching?', 'Deals, family logistics, projects, follow-ups.']
+      ]},
+      { id: 'ideal', title: 'Ideal state', desc: 'Where you want to be across health, money, freedom, relationships, and creative life.', questions: [
+        ['idealHealth', 'If health were going great in 12 months, what would be true?', 'Body, sleep, labs, fitness, nutrition.'],
+        ['idealMoney', 'If money were going great in 12 months, what would be true?', 'Liquidity, allocation, burn, income, risk.'],
+        ['idealFreedom', 'If freedom were going great in 12 months, what would be true?', 'Meetings, deep work, travel, autonomy.'],
+        ['idealRelationships', 'If relationships were going great in 12 months, what would be true?', 'Family, friends, spouse, mentors, community.'],
+        ['idealCreative', 'If creative life were going great in 12 months, what would be true?', 'Music, writing, teaching, design, play.']
+      ]},
+      { id: 'preferences', title: 'Preferences and taste', desc: 'The recommendation layer: what you like, avoid, track, and want surfaced.', questions: [
+        ['booksAuthors', 'What books, authors, and thinkers shaped you?', 'Also include whose new work you would read immediately.'],
+        ['musicMovies', 'What music, movies, shows, or creators should the assistant know?', 'Favorites, do-not-recommend, and tour or release alerts.'],
+        ['foodRestaurants', 'What food, restaurants, dietary preferences, or blocklists matter?', 'Weekly defaults, special occasion, family preferences.'],
+        ['learningInterests', 'What do you want to actively learn or revive?', 'Languages, instruments, technical topics, hobbies.'],
+        ['civicLocal', 'What local or civic topics should always be flagged?', 'Permits, school, city council, legislation, nonprofits.']
+      ]},
+      { id: 'people', title: 'People and relationship map', desc: 'The assistant needs to know who matters, why, and how to handle them.', questions: [
+        ['tierA', 'Who are the Tier-A people the assistant should treat as high-signal?', 'Family, core team, advisors, close friends.'],
+        ['contactsCadence', 'What relationship cadence matters?', 'Weekly, monthly, quarterly, birthdays, trips.'],
+        ['sensitivePeople', 'Any people, relationships, or contexts that require extra care?', 'Private, delicate, or reputationally sensitive.'],
+        ['delegationPeople', 'Who can receive delegated tasks, drafts, calls, or follow-ups?', 'Names, roles, permissions.']
+      ]},
+      { id: 'assistant', title: 'Operating contract', desc: 'How the assistant should learn, update memory, and improve processes after each task.', questions: [
+        ['toolDefaults', 'What should the assistant do without asking?', 'Low-risk defaults, preferred tools, approval thresholds.'],
+        ['neverDo', 'What should the assistant never do unless explicitly told?', 'Email, money movement, legal sends, deletion, public posting.'],
+        ['verificationRules', 'What must be verified before the assistant says done?', 'Deploy URLs, builds, sources, arithmetic, attachments.'],
+        ['memoryRules', 'What belongs in durable memory versus temporary notes?', 'Preferences, stable facts, project conventions, process lessons.'],
+        ['processUpdates', 'When should the assistant update processes or create skills?', 'After repeated workflows, tricky fixes, recurring preferences.']
+      ]}
+    ];
+
+    const key = 'ace-life-os-onboarding-v1';
+    let active = localStorage.getItem(key + ':active') || phases[0].id;
+    let answers = JSON.parse(localStorage.getItem(key) || '{}');
+
+    const $ = (id) => document.getElementById(id);
+    const allQuestions = () => phases.flatMap(p => p.questions.map(q => ({ phase: p.id, phaseTitle: p.title, key: q[0], question: q[1], hint: q[2] })));
+    const save = () => { localStorage.setItem(key, JSON.stringify(answers)); localStorage.setItem(key + ':active', active); updateProgress(); };
+    const toast = (msg='Saved') => { const t=$('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 1100); };
+
+    function updateProgress(){
+      const qs = allQuestions();
+      const answered = qs.filter(q => (answers[q.key] || '').trim()).length;
+      const pct = Math.round((answered / qs.length) * 100);
+      $('answeredMetric').textContent = answered;
+      $('completionText').textContent = pct + '%';
+      $('barFill').style.width = pct + '%';
+    }
+
+    function renderPhases(){
+      $('phaseList').innerHTML = phases.map((p, i) => {
+        const answered = p.questions.filter(q => (answers[q[0]] || '').trim()).length;
+        return `<button class="phase-btn ${p.id===active?'active':''}" data-phase="${p.id}"><strong>Phase ${i+1}</strong><span>${p.title}</span><span>${answered}/${p.questions.length} answered</span></button>`;
+      }).join('');
+      document.querySelectorAll('.phase-btn').forEach(btn => btn.addEventListener('click', () => { active = btn.dataset.phase; save(); render(); }));
+    }
+
+    function renderQuestions(){
+      const phase = phases.find(p => p.id === active) || phases[0];
+      $('phaseEyebrow').textContent = 'Phase ' + (phases.indexOf(phase) + 1);
+      $('phaseTitle').textContent = phase.title;
+      $('phaseDescription').textContent = phase.desc;
+      $('questionList').innerHTML = phase.questions.map((q, idx) => `
+        <article class="question">
+          <div class="q-top"><label class="q-label" for="${q[0]}">${q[1]}</label><span class="chip">${idx+1}/${phase.questions.length}</span></div>
+          <textarea id="${q[0]}" data-key="${q[0]}" placeholder="Answer naturally. Hermes can format it later.">${answers[q[0]] || ''}</textarea>
+          <div class="hint">${q[2]}</div>
+        </article>`).join('');
+      document.querySelectorAll('textarea').forEach(el => el.addEventListener('input', e => { answers[e.target.dataset.key] = e.target.value; save(); }));
+    }
+
+    function render(){ renderPhases(); renderQuestions(); updateProgress(); }
+
+    function packet(){
+      const lines = [];
+      lines.push('# ACE Life OS Onboarding Packet');
+      lines.push('Generated: ' + new Date().toISOString());
+      lines.push('Instruction: Use this to update durable user memory, project notes, and reusable process rules. Do not store sensitive raw answers publicly.');
+      for (const p of phases) {
+        lines.push('\n## ' + p.title);
+        for (const q of p.questions) {
+          const val = (answers[q[0]] || '').trim();
+          if (val) lines.push('\n### ' + q[1] + '\n' + val);
+        }
+      }
+      const unanswered = allQuestions().filter(q => !(answers[q.key] || '').trim()).map(q => `${q.phaseTitle}: ${q.question}`);
+      if (unanswered.length) lines.push('\n## Gaps still unanswered\n' + unanswered.map(x => '- ' + x).join('\n'));
+      return lines.join('\n');
+    }
+
+    function jsonPacket(){
+      return JSON.stringify({
+        schema: 'ace-life-os-onboarding-v1',
+        generatedAt: new Date().toISOString(),
+        source: 'Adapted from PAI InterviewScan phases and prompt taxonomy',
+        answers,
+        unanswered: allQuestions().filter(q => !(answers[q.key] || '').trim())
+      }, null, 2);
+    }
+
+    async function copyText(text){ await navigator.clipboard.writeText(text); toast('Copied'); }
+
+    $('nextPhaseBtn').addEventListener('click', () => { const i=phases.findIndex(p=>p.id===active); active=phases[Math.min(phases.length-1,i+1)].id; save(); render(); window.scrollTo({top:0,behavior:'smooth'}); });
+    $('prevPhaseBtn').addEventListener('click', () => { const i=phases.findIndex(p=>p.id===active); active=phases[Math.max(0,i-1)].id; save(); render(); window.scrollTo({top:0,behavior:'smooth'}); });
+    $('reviewBtn').addEventListener('click', () => { $('packetText').textContent = packet(); $('packetDialog').showModal(); });
+    $('bottomReviewBtn').addEventListener('click', () => $('reviewBtn').click());
+    $('copyBtn').addEventListener('click', () => copyText(packet()));
+    $('copyPacketBtn').addEventListener('click', () => copyText(packet()));
+    $('closeDialog').addEventListener('click', () => $('packetDialog').close());
+    $('downloadBtn').addEventListener('click', () => {
+      const blob = new Blob([jsonPacket()], {type:'application/json'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'ace-life-os-onboarding.json';
+      a.click();
+      URL.revokeObjectURL(a.href);
+      toast('Downloaded');
+    });
+    $('clearBtn').addEventListener('click', () => { if(confirm('Clear all local answers in this browser?')){ answers={}; save(); render(); toast('Cleared'); }});
+    render();
+  </script>
+</body>
+</html>
